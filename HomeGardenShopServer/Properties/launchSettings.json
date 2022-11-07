@@ -1,0 +1,16 @@
+﻿{
+  "profiles": {
+    "HomeGardenShopServer": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "https://192.168.2.118:5000",
+      
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      }
+    }
+
+  }
+}
+
+
