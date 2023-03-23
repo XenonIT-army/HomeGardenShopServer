@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Collections;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using HomeGardenShopDAL.Entities;
 using HomeGardenShopDAL.UnitOfWork;
@@ -135,7 +136,7 @@ public class GreeterService : Greeter.GreeterBase
             if (request != null)
             {
                 Order order = new Order();
-                order.Id = await orderService.GetLast() + 1;
+                var id = await orderService.GetLast() + 1;
                 order.UserId = request.UserId;
                 order.StatusId = (int)OrderStatus.InProcess;
                 order.Sum = request.Sum;
@@ -214,7 +215,7 @@ public class GreeterService : Greeter.GreeterBase
                         OrderId = order.Id,
                         StatusId = order.StatusId,
                         Sum = order.Sum,
-                        DateTime = order.DateTime.ToString(),
+                        DateTime = Timestamp.FromDateTimeOffset(order.DateTime),
                         Products = { productsRep }
                     };
                     orders.Add(orderGrpc);
@@ -268,8 +269,10 @@ public class GreeterService : Greeter.GreeterBase
 
         });
     }
-    public override async Task ListNews(NewsRequest request, IServerStreamWriter<NewsReply> responseStream, ServerCallContext context)
+    public override async Task<ListNewsReply> ListNews(NewsRequest request, ServerCallContext context)
     {
+        Console.WriteLine("news work");
+        RepeatedField<NewsGrpc> listNews = new RepeatedField<NewsGrpc>();
         try
         {
             IService<News> newsService = kernel.Get<IService<News>>();
@@ -283,7 +286,7 @@ public class GreeterService : Greeter.GreeterBase
 
             foreach (var item in news)
             {
-                NewsReply newsReply = new NewsReply();
+                NewsGrpc newsReply = new NewsGrpc();
                 if (request.Language == "ru-RU")
                 {
                     newsReply.Name = item.Name;
@@ -302,15 +305,19 @@ public class GreeterService : Greeter.GreeterBase
                 }
                 newsReply.Id = item.Id;
                 newsReply.Image = ByteString.CopyFrom(item.Image);
-                newsReply.DateTime = item.DateTime.ToString();
-                await responseStream.WriteAsync(newsReply);
+                newsReply.DateTime = Timestamp.FromDateTimeOffset(item.DateTime); 
+                listNews.Add(newsReply);
             }
         }
         catch (Exception ex)
         {
 
         }
+        return await Task.FromResult(new ListNewsReply
+        {
+            News = { listNews }
 
+        });
     }
 
     public async override Task<RegistrUserReply> RegistrUser(RegistrUserRequest request, ServerCallContext context)

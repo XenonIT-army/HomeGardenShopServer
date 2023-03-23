@@ -64,7 +64,7 @@ namespace HomeGardenShopServer
         public async void Test()
         {
             IKernel kernel = new StandardKernel(new ProductNinjectModule());
-            IService<Product> productService = kernel.Get<IService<Product>>();
+            IService<News> productService = kernel.Get<IService<News>>();
             List<Product> products = new List<Product>();
             var list = await productService.GetAll();
             Console.WriteLine(list.Count());

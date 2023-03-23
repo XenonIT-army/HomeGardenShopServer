@@ -61,7 +61,11 @@ namespace HomeGardenShopDAL.Abstructions
 
         public int GetLast(Func<TEntity,int> key)
         {
-            return db.Set<TEntity>().Max(key);
+            var count = db.Set<TEntity>().Count();
+            if (count > 0)
+                return db.Set<TEntity>().Max(key);
+            else
+                return 1;
         }
     }
 }

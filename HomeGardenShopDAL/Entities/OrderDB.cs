@@ -11,7 +11,7 @@ namespace HomeGardenShopDAL.Entities
     [Table("Order")]
     public partial class OrderDB
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public string UserId { get; set; }
