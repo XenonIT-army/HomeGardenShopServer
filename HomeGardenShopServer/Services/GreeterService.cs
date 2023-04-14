@@ -32,16 +32,6 @@ public class GreeterService : Greeter.GreeterBase
     }
 
    
-
-    //public override Task<ProductsReply> GetProducts(ProductsRequest request, ServerCallContext context)
-    //{
-    //    return Task.FromResult(new ProductsReply
-    //    {
-    //        Cost = "1",
-    //         Name = "Tomato"
-            
-    //    }); ;
-    //}
     public override async Task ListProducts(ProductsRequest request, IServerStreamWriter<ProductsReply> responseStream, ServerCallContext context)
     {
         Console.WriteLine("ListProducts");
